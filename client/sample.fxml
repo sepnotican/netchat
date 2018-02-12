@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.web.WebView?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+            minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0"
+            xmlns="http://javafx.com/javafx/8.0.121" fx:controller="client.Controller">
+
+
+    <opaqueInsets>
+        <Insets/>
+    </opaqueInsets>
+    <bottom>
+        <SplitPane fx:id="bottomPane" dividerPositions="0.8618090452261307" maxHeight="-Infinity"
+                   maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="150.0" BorderPane.alignment="CENTER">
+            <items>
+                <TextField fx:id="textField" maxHeight="-Infinity" onAction="#sendMessage" prefHeight="25.0"
+                           prefWidth="304.0"/>
+                <Button maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                        onAction="#sendMessage" prefHeight="25.0" prefWidth="78.0" text="SEND ⏎"/>
+            </items>
+        </SplitPane>
+    </bottom>
+    <top>
+        <SplitPane fx:id="topPane" dividerPositions="0.45582329317269077, 0.8373493975903614" maxHeight="-Infinity"
+                   maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <items>
+                <TextField fx:id="tfLogin" maxHeight="-Infinity" onAction="#focusPasswordField" prefHeight="25.0"
+                           prefWidth="304.0" promptText="Enter login here"/>
+                <TextField fx:id="tfPassword" maxHeight="-Infinity" onAction="#login" prefHeight="25.0"
+                           prefWidth="304.0" promptText="Enter password here"/>
+                <Button maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                        onAction="#login" prefHeight="25.0" prefWidth="78.0" text="Login ⏎"/>
+            </items>
+        </SplitPane>
+    </top>
+    <center>
+        <WebView fx:id="webView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+    </center>
+
+</BorderPane>
