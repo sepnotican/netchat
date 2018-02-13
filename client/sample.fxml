@@ -40,10 +40,12 @@
         <WebView fx:id="webView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
     </center>
     <right>
-        <FlowPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="150.0"
+        <FlowPane minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="150.0"
                   style="-fx-border-style: solid;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="voiceBtn" mnemonicParsing="false" onAction="#voiceConnect" text="voice connect"/>
+                <Button fx:id="voiceBtnConnect" mnemonicParsing="false" onAction="#voiceConnect" text="voice connect"/>
+                <Button fx:id="voiceBtnDisconnect" mnemonicParsing="false" onAction="#voiceDisconnect"
+                        text="Disconnect"/>
             </children>
         </FlowPane>
     </right>

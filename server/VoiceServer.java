@@ -37,7 +37,7 @@ public class VoiceServer {
 
     }
 
-    static final byte factorK = 3;
+    static final byte factorK = 2;
 
     public synchronized void sendVoicePacket(byte[] packet, int offset, int numBytesRead) {
         int clientsCount = voiceClients.size();
@@ -49,16 +49,17 @@ public class VoiceServer {
             }
             locked++;
         }
-        if (locked == clientsCount)
+        if (locked == clientsCount) {
             for (int v = 0; v < clientsCount; v++) {
                 try {
                     voiceClients.get(v).getOutputStream().write(toSend, offset, numBytesRead);
-                    locked = 0;
-                    Arrays.fill(toSend, (byte) 0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+            locked = 0;
+            Arrays.fill(toSend, (byte) 0);
+        }
     }
 
     public void unsubscribe(VoiceClientHandler voiceClientHandler) {

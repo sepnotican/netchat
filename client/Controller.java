@@ -26,7 +26,9 @@ public class Controller implements IChatController {
     @FXML
     public WebView webView;
     @FXML
-    public Button voiceBtn;
+    public Button voiceBtnConnect;
+    @FXML
+    public Button voiceBtnDisconnect;
 
 
     private ChatHistory history = ChatHistory.getInstance();
@@ -101,6 +103,11 @@ public class Controller implements IChatController {
 
     public void voiceConnect() {
         voiceServerHandler = new VoiceServerHandler();
+    }
+
+    public void voiceDisconnect() {
+        voiceServerHandler.destroy();
+        voiceServerHandler = null;
     }
 
 }
