@@ -31,4 +31,8 @@ public class VoiceServer {
         txVoiceServer.start();
 
     }
+
+    public void unsubscribe(VoiceClientHandler voiceClientHandler) {
+        voiceClients.remove(voiceClientHandler);
+    }
 }

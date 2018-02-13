@@ -2,16 +2,12 @@ package server;
 
 import common.ServerConst;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.TargetDataLine;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.zip.GZIPOutputStream;
 
 public class VoiceClientHandler {
 
@@ -23,39 +19,43 @@ public class VoiceClientHandler {
         this.voiceServer = voiceServer;
         this.voiceSocket = voiceSocket;
 
-        TargetDataLine microphone = null;
-        try {
-            microphone = AudioSystem.getTargetDataLine(ServerConst.AUDIO_FORMAT);
-            microphone.open(ServerConst.AUDIO_FORMAT);
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        }
+        Thread txClientHandler = new Thread(() -> {
 
-        //sending data to socket
-        try (OutputStream os = voiceSocket.getOutputStream();
-             GZIPOutputStream gout = new GZIPOutputStream(os, ServerConst.VOICE_BUFFER_SIZE);
-             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(gout, ServerConst.VOICE_BUFFER_SIZE)) {
+            //sending data to socket
+            try (OutputStream os = voiceSocket.getOutputStream();
+                 InputStream is = voiceSocket.getInputStream()) {
 
-            int numBytesRead;
-            byte[] data = new byte[microphone.getBufferSize()];
+                int numBytesRead;
+                byte[] data = new byte[ServerConst.VOICE_BUFFER_SIZE];
 
-            // Begin audio capture.
-            microphone.start();
+                // Begin audio capture.
 
-            // checking stop flag
-            while (!stopped.get()) {
-                // Read the next chunk of data from the TargetDataLine.
-                numBytesRead = microphone.read(data, 0, data.length);
-                // Save this chunk of data.
-                bufferedOutputStream.write(data, 0, numBytesRead);
+
+                // checking stop flag
+                while (!stopped.get()) {
+                    // Read the next chunk of data from the TargetDataLine.
+                    numBytesRead = is.read(data, 0, data.length);
+                    // Save this chunk of data.
+                    os.write(data, 0, numBytesRead);
+                }
+
+            } catch (SocketException se) {
+                System.out.println("Voice client disconnected.");
+                stopped.set(true);
+                try {
+                    voiceSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                voiceServer.unsubscribe(this);
+            } catch (IOException e) {
+                e.printStackTrace();
+                stopped.set(true);
             }
-        } catch (SocketException se) {
-            System.out.println("Voice client disconnected.");
-            stopped.set(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            stopped.set(true);
-        }
+        });
+
+        txClientHandler.setDaemon(true);
+        txClientHandler.start();
 
     }
 
