@@ -2,7 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.web.WebView?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0"
@@ -39,5 +39,13 @@
     <center>
         <WebView fx:id="webView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
     </center>
+    <right>
+        <FlowPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="150.0"
+                  style="-fx-border-style: solid;" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="voiceBtn" mnemonicParsing="false" onAction="#voiceConnect" text="voice connect"/>
+            </children>
+        </FlowPane>
+    </right>
 
 </BorderPane>

@@ -4,6 +4,7 @@ import common.Message;
 import common.MessageType;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebView;
@@ -24,9 +25,14 @@ public class Controller implements IChatController {
     public SplitPane bottomPane;
     @FXML
     public WebView webView;
+    @FXML
+    public Button voiceBtn;
+
+
     private ChatHistory history = ChatHistory.getInstance();
     private HistoryFormatter historyFormatter = new HistoryFormatter();
     private ServerHandler serverHandler = null;
+    private VoiceServerHandler voiceServerHandler = null;
 
     public Controller() {
     }
@@ -92,4 +98,9 @@ public class Controller implements IChatController {
         bottomPane.managedProperty().bind(bottomPane.visibleProperty());
         bottomPane.setVisible(false);
     }
+
+    public void voiceConnect() {
+        voiceServerHandler = new VoiceServerHandler();
+    }
+
 }

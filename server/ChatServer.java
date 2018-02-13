@@ -14,12 +14,14 @@ public class ChatServer implements ServerConst {
 
     private CopyOnWriteArrayList<ClientHandler> clients = new CopyOnWriteArrayList<>();
     private AuthServer authServer;
+    private VoiceServer voiceServer;
 
     ChatServer() {
 
         ServerSocket serverSocket = null;
         Socket socket;
         authServer = new BasicAuthServer();
+        voiceServer = new VoiceServer();
         try {
             serverSocket = new ServerSocket(SERVER_PORT);
             System.out.println("ChatServer is running");

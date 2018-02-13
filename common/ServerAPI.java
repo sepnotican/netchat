@@ -11,7 +11,7 @@ public interface ServerAPI {
     String SERVER_NICKNAME = "SERVER";
 
 
-    String AUTH_WRONG_FORMAT = "Wrong credentials format! Using: \n/AUTH login password";
+    String AUTH_WRONG_FORMAT = "Wrong credentials AUDIO_FORMAT! Using: \n/AUTH login password";
     String AUTH_WRONG_CREDENTIALS = "Wrong credentials! Vefiry your login / password";
     String WHISPER_WRONG_NICKNAME = "That user is not logged in";
 
