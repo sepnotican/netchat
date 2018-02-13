@@ -22,8 +22,7 @@ public class VoiceClientHandler {
         Thread txClientHandler = new Thread(() -> {
 
             //sending data to socket
-            try (OutputStream os = voiceSocket.getOutputStream();
-                 InputStream is = voiceSocket.getInputStream()) {
+            try (InputStream is = voiceSocket.getInputStream()) {
 
                 int numBytesRead;
                 byte[] data = new byte[ServerConst.VOICE_BUFFER_SIZE];
@@ -36,7 +35,7 @@ public class VoiceClientHandler {
                     // Read the next chunk of data from the TargetDataLine.
                     numBytesRead = is.read(data, 0, data.length);
                     // Save this chunk of data.
-                    os.write(data, 0, numBytesRead);
+                    voiceServer.sendVoicePacket(data, 0, numBytesRead);
                 }
 
             } catch (SocketException se) {
@@ -57,6 +56,15 @@ public class VoiceClientHandler {
         txClientHandler.setDaemon(true);
         txClientHandler.start();
 
+    }
+
+    public OutputStream getOutputStream() {
+        try {
+            return voiceSocket.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public boolean isStopped() {

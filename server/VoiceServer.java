@@ -32,6 +32,16 @@ public class VoiceServer {
 
     }
 
+    public void sendVoicePacket(byte[] packet, int offset, int numBytesRead) {
+        voiceClients.forEach(c -> {
+            try {
+                c.getOutputStream().write(packet, offset, numBytesRead);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public void unsubscribe(VoiceClientHandler voiceClientHandler) {
         voiceClients.remove(voiceClientHandler);
     }

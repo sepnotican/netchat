@@ -3,7 +3,7 @@ package common;
 import javax.sound.sampled.AudioFormat;
 
 public interface ServerConst {
-    String SERVER_ADDR = "localhost";
+    String SERVER_ADDR = "192.168.1.70";
     int SERVER_PORT = 8077;
 
     int VOICE_SERVER_PORT = 8088;
