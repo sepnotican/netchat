@@ -16,6 +16,7 @@ import static common.ServerAPI.HELP_TEXT;
 
 public class ClientHandler {
 
+    private static final long TIME_TO_AUTH_MSEC = 120_000;
     private DataInputStream in = null;
     private DataOutputStream out = null;
     private ChatServer server;
@@ -24,12 +25,14 @@ public class ClientHandler {
     private AuthServer authServer;
     private boolean isAuthorized;
     private MessageConverter messageConverter = MessageConverter.getInstance();
+    private long connectedTimestamp;
 //    final SimpleDateFormat sdf = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss ");
 
     ClientHandler(Socket socket, ChatServer server) {
         this.socket = socket;
         this.server = server;
         authServer = server.getAuthServer();
+        connectedTimestamp = System.currentTimeMillis();
 
         try {
             in = new DataInputStream(socket.getInputStream());
@@ -50,6 +53,11 @@ public class ClientHandler {
                     else if (incomingMessage.equalsIgnoreCase(ServerAPI.DISCONNECT))
                         disconnect();
                     else if (!isAuthorized) { //AUTH
+
+                        //check 120 sec  to authorize
+                        if (System.currentTimeMillis() - connectedTimestamp > TIME_TO_AUTH_MSEC)
+                            disconnect();
+
                         doAuthorize(incomingMessage);
                     } else { //transfer message
                         if (incomingMessage.charAt(0) != ServerAPI.SYSTEM_SYMBOL) { //common message
