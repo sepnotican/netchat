@@ -37,15 +37,16 @@ public class VoiceServer {
 
     }
 
-    static final byte factorK = 2;
+    private static final byte factorK = 1;
 
     public synchronized void sendVoicePacket(byte[] packet, int offset, int numBytesRead) {
         int clientsCount = voiceClients.size();
         if (locked != clientsCount) {
-            for (int i = 0; i < packet.length; i++) {
+            for (int i = 0; i < numBytesRead; i++) {
                 if (packet[i] > factorK || packet[i] < -factorK)
                     toSend[i] |= packet[i];
-                else i++;
+                else
+                    i++;
             }
             locked++;
         }
