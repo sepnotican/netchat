@@ -1,12 +1,15 @@
 package server;
 
+import common.Message;
 import common.MessageType;
 import common.ServerAPI;
 import common.ServerConst;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -20,7 +23,7 @@ public class ChatServer implements ServerConst {
 
         ServerSocket serverSocket = null;
         Socket socket;
-        authServer = new BasicAuthServer();
+        authServer = new DummyAuthServer();
         voiceServer = new VoiceServer();
         try {
             serverSocket = new ServerSocket(SERVER_PORT);
@@ -49,6 +52,10 @@ public class ChatServer implements ServerConst {
         new ChatServer();
     }
 
+    public void broadcast(Message message) {
+        clients.stream().filter(ClientHandler::isAuthorized).forEach(c -> c.sendMessage(message));
+    }
+
     public void broadcast(MessageType messageType, String message, String sender) {
         clients.stream().filter(ClientHandler::isAuthorized).forEach(c -> c.sendMessage(messageType, message, sender));
     }
@@ -61,7 +68,7 @@ public class ChatServer implements ServerConst {
         return authServer;
     }
 
-    public void whisper(ClientHandler sender, String[] whisperContent, String datetime) {
+    public void whisper(ClientHandler sender, String[] whisperContent) {
 
         ClientHandler receiver = authServer.getClientHandlerByNickname(whisperContent[1]);
         if (receiver == null)
@@ -75,4 +82,22 @@ public class ChatServer implements ServerConst {
         }
 
     }
+
+    public String getClientsForUserList() {
+        StringBuilder result = new StringBuilder();
+        clients.forEach(c -> result.append(c.getNickname()).append('\n'));
+        return result.toString();
+    }
+
+    public void updateUserList() {
+        String clientsList = getClientsForUserList();
+        try {
+            Message message = new Message(MessageType.UPDATE_USERLIST, System.currentTimeMillis(),
+                    ServerAPI.SERVER_NICKNAME, URLEncoder.encode(clientsList, "UTF-8"));
+            broadcast(message);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

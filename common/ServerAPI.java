@@ -5,11 +5,9 @@ public interface ServerAPI {
     String AUTH_PREFIX = "/AUTH";
     String AUTH_SUCCESS = "/AUTHOK";
     String WHISPER_PREFIX = "/W";
-    String WHISPER_PREFIX_LC = "/w";
     String DISCONNECT = "/LEAVE";
     String HELP = "/HELP";
     String SERVER_NICKNAME = "SERVER";
-
 
     String AUTH_WRONG_FORMAT = "Wrong credentials AUDIO_FORMAT! Using: \n/AUTH login password";
     String AUTH_WRONG_CREDENTIALS = "Wrong credentials! Vefiry your login / password";

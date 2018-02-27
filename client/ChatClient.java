@@ -18,7 +18,7 @@ public class ChatClient extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sample.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainForm.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setTitle("My Chat");
         Scene scene = new Scene(root, 500, 400);

@@ -43,9 +43,16 @@
         <FlowPane minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="150.0"
                   style="-fx-border-style: solid;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="voiceBtnConnect" mnemonicParsing="false" onAction="#voiceConnect" text="voice connect"/>
-                <Button fx:id="voiceBtnDisconnect" mnemonicParsing="false" onAction="#voiceDisconnect"
-                        text="Disconnect"/>
+                <Label text="Voice chat"/>
+                <HBox prefHeight="27.0" prefWidth="148.0" spacing="10.0">
+                    <children>
+                        <Button fx:id="voiceBtnConnect" mnemonicParsing="false" onAction="#voiceConnect"
+                                text="Connect"/>
+                        <Button fx:id="voiceBtnDisconnect" contentDisplay="TOP" mnemonicParsing="false"
+                                onAction="#voiceDisconnect" text="Disconnect"/>
+                    </children>
+                </HBox>
+                <ListView fx:id="lvUserList" prefHeight="300.0" prefWidth="100.0"/>
             </children>
         </FlowPane>
     </right>

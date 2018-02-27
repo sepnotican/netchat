@@ -5,6 +5,7 @@ import common.MessageType;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebView;
@@ -29,7 +30,8 @@ public class Controller implements IChatController {
     public Button voiceBtnConnect;
     @FXML
     public Button voiceBtnDisconnect;
-
+    @FXML
+    public ListView lvUserList;
 
     private ChatHistory history = ChatHistory.getInstance();
     private HistoryFormatter historyFormatter = new HistoryFormatter();
@@ -75,9 +77,17 @@ public class Controller implements IChatController {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    history.append(message);
-                    final String formattedHistory = historyFormatter.getFormattedHistory(history.getHistory());
-                    webView.getEngine().loadContent(formattedHistory);
+
+                    if (message.getMessageType() == MessageType.UPDATE_USERLIST) {
+                        lvUserList.getItems().clear();
+                        for (String s : message.getText().split("\n")) {
+                            lvUserList.getItems().add(s);
+                        }
+                    } else {
+                        history.append(message);
+                        final String formattedHistory = historyFormatter.getFormattedHistory(history.getHistory());
+                        webView.getEngine().loadContent(formattedHistory);
+                    }
                 }
             });
 
@@ -99,14 +109,19 @@ public class Controller implements IChatController {
         topPane.managedProperty().bind(topPane.visibleProperty());
         bottomPane.managedProperty().bind(bottomPane.visibleProperty());
         bottomPane.setVisible(false);
+//        listView.getItems().add("Hellomoto");
     }
 
     public void voiceConnect() {
-        voiceServerHandler = new VoiceServerHandler();
+        if (voiceServerHandler == null
+                || voiceServerHandler.isStopped())
+            voiceServerHandler = new VoiceServerHandler();
     }
 
     public void voiceDisconnect() {
-        voiceServerHandler.destroy();
+        if (voiceServerHandler != null)
+            voiceServerHandler.destroy();
+
         voiceServerHandler = null;
     }
 

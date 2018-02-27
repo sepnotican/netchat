@@ -7,6 +7,7 @@ import common.ServerAPI;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
@@ -62,13 +63,12 @@ public class ClientHandler {
                     } else { //transfer message
                         if (incomingMessage.charAt(0) != ServerAPI.SYSTEM_SYMBOL) { //common message
                             server.broadcast(MessageType.BROADCAST, incomingMessage, nickname);
-                        } else if (incomingMessage.startsWith(ServerAPI.WHISPER_PREFIX)
-                                || incomingMessage.startsWith(ServerAPI.WHISPER_PREFIX_LC)) { //whisper message
+                        } else if (incomingMessage.toUpperCase().startsWith(ServerAPI.WHISPER_PREFIX)) { //whisper message
                             whisper(incomingMessage);
                         }
                     }
                 }
-            } catch (SocketException e) {
+            } catch (SocketException | EOFException e) {
                 isAuthorized = false;
                 disconnect();
                 System.out.println("Клиент отключился");
@@ -90,7 +90,7 @@ public class ClientHandler {
         String[] whisperContent = incomingMessage.split(" ");
         if (whisperContent.length < 3)
             sendMessage(MessageType.INFO, ServerAPI.WHISPER_USAGE, ServerAPI.SERVER_NICKNAME);
-        else server.whisper(this, whisperContent, Long.toString(System.currentTimeMillis()));
+        else server.whisper(this, whisperContent);
     }
 
     private void doAuthorize(String incomingMessage) {
@@ -108,6 +108,7 @@ public class ClientHandler {
                         sendMessage(MessageType.SYSTEM, ServerAPI.AUTH_SUCCESS);
                         authServer.setClientHandlerByNickname(nickname, this);
                         server.broadcast(MessageType.SERVER_BROADCAST, nickname + " has entered in the chat.", ServerAPI.SERVER_NICKNAME);
+                        server.updateUserList();
                     }
                 } else sendMessage(MessageType.INFO, ServerAPI.AUTH_WRONG_CREDENTIALS);
             }
@@ -117,6 +118,15 @@ public class ClientHandler {
 
     public void sendMessage(MessageType messageType, String textMessage) {
         sendMessage(messageType, textMessage, nickname);
+    }
+
+    public void sendMessage(Message message) {
+        try {
+            out.writeUTF(messageConverter.marshall(message));
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendMessage(MessageType messageType, String textMessage, String sender) {
@@ -146,6 +156,7 @@ public class ClientHandler {
         }
         if (nickname != null && !nickname.isEmpty())
             authServer.setClientHandlerByNickname(nickname, null);
+        server.updateUserList();
     }
 
     public String getNickname() {

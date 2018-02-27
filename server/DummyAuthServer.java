@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BasicAuthServer implements AuthServer {
+public class DummyAuthServer implements AuthServer {
 
     private final Map<String, ClientHandler> handlerByNick = Collections.synchronizedMap(new HashMap<>());
     private final ArrayList<DummyEntry> dummyEntries = new ArrayList<>();
 
-    BasicAuthServer() {
+    DummyAuthServer() {
         dummyEntries.add(new DummyEntry("Semen", "u1", "p1"));
         dummyEntries.add(new DummyEntry("Ivan", "u2", "p2"));
         dummyEntries.add(new DummyEntry("Pupkin", "u3", "p3"));

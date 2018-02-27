@@ -5,5 +5,6 @@ public enum MessageType {
     INFO,
     BROADCAST,
     SERVER_BROADCAST,
-    SYSTEM
+    SYSTEM,
+    UPDATE_USERLIST
 }

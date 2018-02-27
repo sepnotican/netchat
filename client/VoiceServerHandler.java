@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VoiceServerHandler {
@@ -27,10 +26,9 @@ public class VoiceServerHandler {
 
         try {
             voiceSocket = new Socket(ServerConst.SERVER_ADDR, ServerConst.VOICE_SERVER_PORT);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            isStopped.set(true);
         }
 
         txServerHandlerIn = new Thread(() -> {
@@ -62,41 +60,40 @@ public class VoiceServerHandler {
         });
 
         txServerHandlerOut = new Thread(() -> {
-
-
             try {
                 microphone = AudioSystem.getTargetDataLine(ServerConst.AUDIO_FORMAT);
                 microphone.open(ServerConst.AUDIO_FORMAT, ServerConst.VOICE_BUFFER_SIZE);
             } catch (LineUnavailableException e) {
                 e.printStackTrace();
+                return;
             }
 
             OutputStream os = null;
             //sending data to socket
             try {
-
                 int numBytesRead;
                 byte[] data = new byte[ServerConst.VOICE_BUFFER_SIZE];
-
                 // Begin audio capture.
                 microphone.start();
-
                 os = voiceSocket.getOutputStream();
-
-                // Read the next chunk of data from the TargetDataLine.
                 while (!isStopped.get() && (numBytesRead = microphone.read(data, 0, data.length)) > 0) {
-                    // Save this chunk of data.
                     os.write(data, 0, numBytesRead);
                 }
             } catch (SocketException e) {
-
+                System.err.println("Disconnected. " + e.getMessage());
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                microphone.close();
-                microphone.stop();
+                if (microphone != null) {
+                    try {
+                        microphone.close();
+                        microphone.stop();
+                    } catch (Exception ignored) {
+                    }
+                }
                 try {
-                    os.close();
+                    if (os != null)
+                        os.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -106,7 +103,6 @@ public class VoiceServerHandler {
         txServerHandlerOut.start();
         txServerHandlerIn.setDaemon(true);
         txServerHandlerIn.start();
-
     }
 
     public void destroy() {
@@ -116,5 +112,9 @@ public class VoiceServerHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isStopped() {
+        return isStopped.get();
     }
 }
