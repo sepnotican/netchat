@@ -3,6 +3,7 @@ package client;
 import common.Message;
 import common.MessageType;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -59,6 +60,14 @@ public class Controller implements IChatController {
         tfPassword.requestFocus();
     }
 
+
+    public void prepareWhisper() {
+        ObservableList selectedItems = lvUserList.getSelectionModel().getSelectedItems();
+        if (selectedItems.size() > 0) {
+            textField.setText("/w " + selectedItems.get(0).toString());
+            textField.requestFocus();
+        }
+    }
 
     @Override
     public void recvMessage(Message message) {

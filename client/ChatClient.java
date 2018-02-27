@@ -21,7 +21,7 @@ public class ChatClient extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainForm.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setTitle("My Chat");
-        Scene scene = new Scene(root, 500, 400);
+        Scene scene = new Scene(root, 550, 400);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setMinHeight(500);

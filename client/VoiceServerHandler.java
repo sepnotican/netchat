@@ -26,6 +26,7 @@ public class VoiceServerHandler {
 
         try {
             voiceSocket = new Socket(ServerConst.SERVER_ADDR, ServerConst.VOICE_SERVER_PORT);
+            voiceSocket.setTcpNoDelay(true);
         } catch (IOException e) {
             e.printStackTrace();
             isStopped.set(true);

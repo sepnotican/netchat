@@ -24,7 +24,7 @@ public class ChatServer implements ServerConst {
         ServerSocket serverSocket = null;
         Socket socket;
         authServer = new DummyAuthServer();
-        voiceServer = new VoiceServer();
+        voiceServer = new VoiceServer(this);
         try {
             serverSocket = new ServerSocket(SERVER_PORT);
             System.out.println("ChatServer is running");

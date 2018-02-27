@@ -15,7 +15,7 @@ public class VoiceServer {
 
     private final CopyOnWriteArrayList<VoiceClientHandler> voiceClients = new CopyOnWriteArrayList<>();
 
-    VoiceServer() {
+    VoiceServer(ChatServer chatServer) {
         Arrays.fill(toSend, (byte) 0);
 
         Thread txVoiceServer = new Thread(() -> {
@@ -24,10 +24,9 @@ public class VoiceServer {
                 while (true) {
                     Socket voiceSocket;
                     voiceSocket = voiceServerSocket.accept();
+                    voiceSocket.setTcpNoDelay(true);
                     voiceClients.add(new VoiceClientHandler(voiceSocket, this));
-
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
