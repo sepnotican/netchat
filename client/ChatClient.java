@@ -5,11 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import server.ChatServer;
 
 public class ChatClient extends Application {
-
-    private ChatServer chatServer;
 
     public static void main(String[] args) {
         launch(args);

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ChatHistory {
 
-    private static final int HISTORY_SIZE = 10;
+    private static final int HISTORY_SIZE = 1000;
     private static ChatHistory instance;
 
     static {
